@@ -9,12 +9,14 @@ import csv
 
 class Crawler():
     def __init__(self, config, name=str(uuid.uuid4().hex)):
+        self.lastest_timestamp = 0.0
+        self.lastest_data = []
         self.name = name
         self.threads = []
         self.config = config
         self.tmp_file = None
         worker_config = SessionWorkerConfig(
-            running_delay=10,
+            running_delay=5,
             first_half_start_callback=self.start_crawling,
             first_half_running_callback=self.crawl,
             first_half_end_callback=self.finish_crawling,
@@ -48,6 +50,9 @@ class Crawler():
         current_timestamp = datetime.now().timestamp()
         output = utils.execute_callback(self.config.crawling_callback, self.config.crawling_args)
         utils.log(current_timestamp, output)
+        if self.lastest_timestamp < current_timestamp:
+            self.lastest_timestamp = current_timestamp
+            self.lastest_data = [current_timestamp] + output
         try:
             row = str(current_timestamp)
             for item in output:
@@ -88,6 +93,9 @@ class Crawler():
         except Exception as e:
             utils.log(e)
         utils.log("Crawling finished.")
+
+    def get_lastest_data(self):
+        return self.lastest_data
 
 class CrawlerConfig:
     def __init__(self, crawling_callback=None, crawling_args=()):
