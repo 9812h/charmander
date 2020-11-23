@@ -44,11 +44,12 @@ class Crawler():
         self.tmp_filepath = "./tmp/" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + "_" + self.name + ".tmp"
         self.output_filepath = "./output/" + self.name + "_" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + ".csv"
         self.tmp_file = open(self.tmp_filepath, "a+", buffering=1)
+        self.crawl_cb_state = (self.config.crawling_state).copy()
 
 
     def crawl_cb_wrapper(self):
         current_timestamp = datetime.now().timestamp()
-        output = utils.execute_callback(self.config.crawling_callback, self.config.crawling_args)
+        output = utils.execute_callback(self.config.crawling_callback, (self.crawl_cb_state, ))
         utils.log(current_timestamp, output)
         if self.lastest_timestamp < current_timestamp:
             self.lastest_timestamp = current_timestamp
@@ -113,7 +114,7 @@ class Crawler():
         return None
 
 class CrawlerConfig:
-    def __init__(self, crawling_callback=None, crawling_args=()):
+    def __init__(self, crawling_callback=None, crawling_state={}):
         self.crawling_callback = crawling_callback
-        self.crawling_args = crawling_args
+        self.crawling_state = crawling_state
 
