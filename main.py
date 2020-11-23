@@ -1,8 +1,9 @@
-from crawler import *
 import utils
 import random
 import time
-import threading
+from crawler import *
+from main_window import *
+from crawler_ui_component import *
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -10,9 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
 def random_behavior():
-    number = random.randint(1, 5)
-    time.sleep(number)
-    return number
+    number1 = random.randint(1, 100)
+    number2 = random.randint(1, 100)
+    time.sleep(random.randint(1, 5))
+    return [number1, number2]
 
 def quantity_crawl():
     output = [],
@@ -41,8 +43,12 @@ def quantity_crawl():
     return output
 
 if __name__ == '__main__':
-    crawlerConfig = CrawlerConfig(crawling_callback=quantity_crawl)
-    quantity_crawler = Crawler(name="quantity", config=crawlerConfig)
-    quantity_thread = threading.Thread(target=quantity_crawler.start, args=())
-    quantity_thread.start()
-    quantity_thread.join()
+    crawlerConfig = CrawlerConfig(crawling_callback=random_behavior)
+    random_crawler = Crawler(config=crawlerConfig)
+    random_crawler2 = Crawler(config=crawlerConfig)
+    main_window = MainWindow()
+    c = CrawlerUiComponent(main_window, random_crawler, headers=["update_time", "last_price", "total_qtty_traded"])
+    c.pack()
+    c2 = CrawlerUiComponent(main_window, random_crawler2, headers=["update_time", "last_price", "total_qtty_traded"])
+    c2.pack()
+    main_window.mainloop()
