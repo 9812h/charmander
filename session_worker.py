@@ -3,9 +3,9 @@ import time
 import utils
 
 class SessionWorker:
-    WAITING_STATE = 0
-    FIRST_HALF_STATE = 1
-    SECOND_HALF_STATE = 2
+    WAITING_STATE = "waiting"
+    FIRST_HALF_STATE = "first_half"
+    SECOND_HALF_STATE = "second_half"
 
     def __init__(self, config):
         self.config = config
@@ -46,6 +46,7 @@ class SessionWorker:
                         self.state = SessionWorker.WAITING_STATE
             else:
                 self.state = SessionWorker.WAITING_STATE
+                time.sleep(1)
 
     def work(self, half_running_condition, running_delay, all_half_callback, all_half_args, callback, args):
         while True:

@@ -42,7 +42,7 @@ class Crawler():
         except Exception as e:
             pass
         self.tmp_filepath = "./tmp/" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + "_" + self.name + ".tmp"
-        self.output_filepath = "./output/" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + "_" + self.name + ".csv"
+        self.output_filepath = "./output/" + self.name + "_" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + ".csv"
         self.tmp_file = open(self.tmp_filepath, "a+", buffering=1)
 
 
@@ -77,12 +77,16 @@ class Crawler():
             self.tmp_file.close()
         except Exception as e:
             utils.log(e)
+        self.export_tmp(self.output_filepath)
+        utils.log("Crawling finished.")
+
+    def export_tmp(self, filepath):
         tmp_file = open(self.tmp_filepath, "r")
         data = list(csv.reader(tmp_file, delimiter=";"))
         data.sort(key=lambda x: float(x[0]))
         for x in data:
             x[0] = datetime.fromtimestamp(float(x[0])).strftime("%d/%m/%Y %H:%M:%S")
-        output_file = open(self.output_filepath, "a+", newline="")
+        output_file = open(filepath, "a+", newline="")
         csv.writer(output_file, delimiter=";").writerows(data)
         try:
             tmp_file.close()
@@ -92,10 +96,21 @@ class Crawler():
             output_file.close()
         except Exception as e:
             utils.log(e)
-        utils.log("Crawling finished.")
 
     def get_lastest_data(self):
         return self.lastest_data
+
+    def get_session_worker_state(self):
+        return self.session_worker.get_state()
+
+    def export_now(self):
+        if not (self.session_worker.get_state() == SessionWorker.WAITING_STATE):
+            export_filepath = "./output/"\
+                              + "exported_" + datetime.now().strftime("%H%M%S_") \
+                              + self.name + "_" + datetime.now().strftime("%Y%m%d") + "_" + str(self.session_worker.get_state()) + ".csv"
+            self.export_tmp(export_filepath)
+            return export_filepath
+        return None
 
 class CrawlerConfig:
     def __init__(self, crawling_callback=None, crawling_args=()):
