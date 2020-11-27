@@ -45,8 +45,7 @@ class SessionWorker:
                     else:
                         self.state = SessionWorker.WAITING_STATE
             else:
-                self.state = SessionWorker.WAITING_STATE
-                time.sleep(1)
+                self.wait()
 
     def work(self, half_running_condition, running_delay, all_half_callback, all_half_args, callback, args):
         while True:
@@ -55,6 +54,13 @@ class SessionWorker:
             utils.execute_callback(all_half_callback, all_half_args)
             utils.execute_callback(callback, args)
             time.sleep(running_delay)
+
+    def wait(self):
+        while True:
+            if (SessionWorker.is_first_half()) or (SessionWorker.is_second_half()):
+                break
+            time.sleep(self.config.running_delay)
+
 
     def get_state(self):
         return self.state

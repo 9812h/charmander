@@ -44,8 +44,8 @@ def hnx_crawl(state):
     ### MS Edge (Chromium)
     options = EdgeOptions()
     options.use_chromium = True
-    # options.add_argument("headless")
-    options.add_argument("disable-gpu")
+    options.add_argument("headless")
+    # options.add_argument("disable-gpu")
     browser = Edge(executable_path="./drivers/msedgedriver", options=options)
 
     browser.get("https://banggia.hnx.vn/")
@@ -114,14 +114,14 @@ def stockprice_crawl(state):
 
     return output
 
+
 if __name__ == '__main__':
     main_window = MainWindow()
-
     hnx_crawler_config = CrawlerConfig(crawling_callback=hnx_crawl, crawling_state={})
     hnx_crawler = Crawler(config=hnx_crawler_config, name="hnx")
     hnx_ui_component = CrawlerUiComponent(main_window, hnx_crawler, headers=["update_time", "last_price", "total_qtty_traded"])
-    hnx_ui_component.pack()
-
+    # hnx_ui_component.pack()
+    
     stockprice_crawler_config = CrawlerConfig(
         crawling_callback=stockprice_crawl,
         crawling_state={
