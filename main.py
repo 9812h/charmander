@@ -30,7 +30,7 @@ def stockprice_crawl(state):
         cols = rows[0].find_elements(By.TAG_NAME, "td")
         data = []
         for col in cols:
-            data.append(col.text.replace(",", "."))
+            data.append(col.text.replace(".","").replace(",", "."))
 
         curr_row_number = float(data[0])
         curr_price = float(data[2])

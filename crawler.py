@@ -86,7 +86,7 @@ class Crawler():
         data = list(csv.reader(tmp_file, delimiter=";"))
         data.sort(key=lambda x: float(x[0]))
         for x in data:
-            x[0] = datetime.fromtimestamp(float(x[0])).strftime("%d/%m/%Y %H:%M:%S")
+            x[0] = datetime.fromtimestamp(float(x[0])).strftime("%m/%d/%Y %H:%M:%S")
         output_file = open(filepath, "a+", newline="")
         csv.writer(output_file, delimiter=";").writerows(data)
         try:
