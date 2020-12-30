@@ -38,10 +38,12 @@ def stockprice_crawl(state):
         curr_quantity = float(data[4])
         curr_type = data[5]
 
+        utils.log(curr_row_number)
+
         if curr_row_number < 3:
             pass
         else:
-            if state["Largest qtty"] < curr_quantity: # =< ?
+            if state["Largest qtty"] <= curr_quantity:
                 state["Largest qtty"] = curr_quantity
                 state["Price of largest qtty"] = curr_price
                 state["B/S (largest qtty)"] = curr_type
